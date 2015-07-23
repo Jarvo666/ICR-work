@@ -31,8 +31,6 @@ while (o<=dim(cancer)[1]) {
 }
 beta <- top / bottom
 se <- sqrt(1/bottom)
-print(paste0("Beta hat = ",beta))
+print(paste0("beta hat = ",beta))
 print(paste0("s.e. = ",se))
-print(top)
-print(bottom)
 }
