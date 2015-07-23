@@ -1,0 +1,38 @@
+Beta.hat <- function(risk, outcome) {
+factor <- read.table(risk, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+cancer <- read.table(outcome, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+n <- 1
+m <- 0
+top <- 0
+o <- 1
+p <- 0
+bottom <- 0
+count  <- 1
+while (count<=dim(cancer)[1]) {
+	if (identical(factor$Effect[count], cancer$Other[count]) & identical(factor$Other[count], cancer$Effect[count])) {
+		cancer$Beta[count] <- - (cancer$Beta[count])
+		count <- count + 1
+	} else if (identical(factor$Effect[count], cancer$Effect[count]) & identical(factor$Other[count], cancer$Other[count])) {
+		count <- count + 1
+	} else {
+		stop("Irregularity in SNP ", factor$RSID[count], ". Factor has ", factor$Effect[count], "/", factor$Other[count], ", cancer has ", cancer$Effect[count], "/", cancer$Other[count])
+	}
+}
+
+while (n<=dim(cancer)[1]) {
+	m <- factor$Beta[n] * cancer$Beta[n] * (cancer$Sigma[n])^-2
+	top <- top + m
+	n <- n+1
+}
+while (o<=dim(cancer)[1]) {
+	p <- (factor$Beta[o])^2 * (cancer$Sigma[o])^-2
+	bottom <- bottom + p
+	o <- o+1
+}
+beta <- top / bottom
+se <- sqrt(1/bottom)
+print(paste0("Beta hat = ",beta))
+print(paste0("s.e. = ",se))
+print(top)
+print(bottom)
+}
